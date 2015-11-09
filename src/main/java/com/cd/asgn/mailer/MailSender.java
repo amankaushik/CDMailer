@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.Properties;
 
 import javax.mail.AuthenticationFailedException;
@@ -18,13 +20,18 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 import com.cd.asgn.mailer.EmailStructure;
 
 public class MailSender {
 	static Properties property = new Properties();
 	static InputStream input = null;
-
+	public static final int THREAD_POOL_SIZE = 5;
+	final static ExecutorService mailProducers = Executors.newFixedThreadPool(1);
+	final static ExecutorService mailConsumers = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+	
 	public static ArrayList<MimeMessage> get_all_messages(HashMap<Integer, EmailStructure> mails_to_send,
 			Session session) throws MessagingException, UnsupportedEncodingException {
 		ArrayList<MimeMessage> messages = new ArrayList<MimeMessage>();
@@ -52,7 +59,7 @@ public class MailSender {
 	}
 
 	public static void main(String[] args)
-			throws ClassNotFoundException, MessagingException, UnsupportedEncodingException {
+			throws ClassNotFoundException, MessagingException, UnsupportedEncodingException, InterruptedException {
 		try {
 			// Properties File
 			input = new FileInputStream("src/main/resources/config.properties");
@@ -68,11 +75,31 @@ public class MailSender {
 				}
 			}
 		}
+		
 		HashMap<Integer, EmailStructure> mails_to_send = new HashMap<Integer, EmailStructure>();
 		DataUtil dataUtil = new DataUtil();
 		mails_to_send = dataUtil.get_email_data(property, input);
+		while(!mails_to_send.isEmpty()) {
+			
+			mails_to_send = dataUtil.get_email_data(property, input);
+			
+			/* 
+			 * Handle rejected mails
+			 * */
+		}
+		mailProducers.shutdown();
+		mailProducers.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+		mailConsumers.shutdown();
+		mailConsumers.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+		/*
+		MailSender mailSender = new MailSender();
+		for(int i = 0; i < THREAD_POOL_SIZE; i++) {
+			mailerProducers.submit(mailSender )
+		}
+		*/
+		/*
 
-		/* ------------------------------------- MAIL SENDER ------------------------------------------------- */
+		///* ------------------------------------- MAIL SENDER ------------------------------------------------- 
 
 		System.out.println("Start Sending");
 		Session session = Session.getInstance(property, null);
@@ -97,6 +124,10 @@ public class MailSender {
 		} finally {
 			transport.close();
 		}
-
+		*/
+		
+		
+		
 	}
+	
 }
