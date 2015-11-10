@@ -29,7 +29,7 @@ public class DataUtil {
 			Statement statement = connection.createStatement();
 
 			// Fetching data from database
-			ResultSet result_set = statement.executeQuery("SELECT * FROM emailqueue WHERE is_processed = 0 LIMIT 10000");
+			ResultSet result_set = statement.executeQuery("SELECT * FROM emailqueue WHERE is_processed = 0 LIMIT 10000"); // lock, read and write as processed.
 
 			// Iterating data read from database
 			while (result_set.next()) {
