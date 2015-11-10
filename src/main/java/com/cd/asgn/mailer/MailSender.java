@@ -39,7 +39,7 @@ public class MailSender {
 			HashMap.Entry<Integer, EmailStructure> pair = (HashMap.Entry<Integer, EmailStructure>) itr.next();
 			emailStructure = (EmailStructure) pair.getValue();
 			id = (Integer) pair.getKey();
-			
+
 			MimeMessage message = new MimeMessage(session);
 			message.addHeader("Content-type", "text/HTML; charset=UTF-8");
 			message.addHeader("format", "flowed");
@@ -55,7 +55,8 @@ public class MailSender {
 		return messages;
 	}
 
-	public void startSending() throws ClassNotFoundException, UnsupportedEncodingException, MessagingException, InterruptedException {
+	public void startSending()
+			throws ClassNotFoundException, UnsupportedEncodingException, MessagingException, InterruptedException {
 		HashMap<Integer, EmailStructure> mails_to_send = new HashMap<Integer, EmailStructure>();
 		DataUtil dataUtil = new DataUtil();
 		mails_to_send = dataUtil.get_email_data(property, input);
@@ -78,7 +79,8 @@ public class MailSender {
 				FutureTask<Integer> futureTask = new FutureTask<Integer>(mailerConsumer);
 				MailSender.mailConsumers.execute(mailerConsumer);
 				MailSender.mailConsumers.submit(futureTask);
-				mailsNotSent.add(futureTask);				
+				mailsNotSent.add(futureTask);
+				break;
 			}
 		}
 		mailConsumers.shutdown();
