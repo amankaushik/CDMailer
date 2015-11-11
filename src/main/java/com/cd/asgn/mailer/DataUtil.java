@@ -43,7 +43,8 @@ public class DataUtil {
 			}
 			logger.info("Lock acquired ..");
 			Statement statement = connection.createStatement();
-			ResultSet result_set = statement.executeQuery("SELECT * FROM emailqueue WHERE processed = 0"); 
+			String selectQuery = "SELECT * FROM emailqueue WHERE processed = 0 LIMIT " + property.getProperty("query_limit"); 
+			ResultSet result_set = statement.executeQuery(selectQuery); 
 			
 			while (result_set.next()) {
 				EmailStructure emailStructure = new EmailStructure();

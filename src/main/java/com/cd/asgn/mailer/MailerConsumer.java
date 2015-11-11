@@ -31,45 +31,41 @@ public class MailerConsumer implements Callable<Integer>, Runnable {
 		try {
 			/* initialize transport and authenticate */
 			transport = session.getTransport(property.getProperty("protocol"));
+			System.out.println("Sending From : " + mimeMessage.getFrom()[0].toString() + " Sending To : " + mimeMessage.getAllRecipients()[0].toString());
 			transport.connect(property.getProperty("mail.smtp.host"),
 			Integer.parseInt(property.getProperty("mail.smtp.port")), property.getProperty("user"),	property.getProperty("password"));
 			transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
-		} catch (NoSuchProviderException e1) {
-			flag = 0; // program should not stop.
-			e1.printStackTrace();
+			Thread.sleep(30);
+		} catch (NoSuchProviderException e) {
+			flag = 0; 
+			e.printStackTrace();
 		} catch (AuthenticationFailedException e) {
-			flag = 0; // program should not stop.
+			flag = 0; 
 			System.out.println("Authentication Failed");
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (MessagingException e) {
-			flag = 0; // program should not stop.
-			System.out.println("Something Else Failed");
-			e.printStackTrace();
+			flag = 0; 
+			System.out.println("Messaging Failed");
+			//e.printStackTrace();
+		} catch (InterruptedException e) {
+			flag = 0;
+			System.out.println("Interrupted");
+			//e.printStackTrace();
 		} finally {
 			try {
 				transport.close();
 			} catch (MessagingException e) {
+				//System.out.println("In Finally");
 				e.printStackTrace();
 			}
 		}
 	}
-
 	public Integer call() throws Exception {
-		if(flag != -1) {
+		if(flag == 0) {
 			return this.mail_id;
 		} 
 		else {
 			return flag;
 		}
 	}
-
-	public Integer getMail_id() {
-		return mail_id;
-	}
-
-	public void setMail_id(Integer mail_id) {
-		this.mail_id = mail_id;
-	}
-	
-
 }

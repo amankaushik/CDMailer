@@ -104,6 +104,7 @@ public class MailSender {
 			 */
 			for (FutureTask<Integer> mail : mailsNotSent) {
 				try {
+					//System.out.println("Future Get : "+ mail.get().toString());
 					if(mail.get() != -1)
 						badID.add(mail.get());
 				} catch (InterruptedException | ExecutionException e) {
