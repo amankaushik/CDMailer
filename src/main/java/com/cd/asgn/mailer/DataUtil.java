@@ -3,22 +3,25 @@ package com.cd.asgn.mailer;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class DataUtil {
-	HashMap<Integer, EmailStructure> get_email_data(Properties property, InputStream input) throws ClassNotFoundException {
-		
+	
+	/* Get mail details from database */
+	Map<Integer, EmailStructure> get_email_data(Properties property, InputStream input)
+			throws ClassNotFoundException {
 		/*
-		 * EmailStructure : Class to hold email information from the
-		 * database ID to EmailStructure map
+		 * EmailStructure : Class to hold email information from the database ID
+		 * to EmailStructure map
 		 */
-		HashMap<Integer, EmailStructure> mails_to_send = new HashMap<Integer, EmailStructure>();
+		Map<Integer, EmailStructure> mails_to_send = new HashMap<Integer, EmailStructure>();
 
-		/* ----------------------------------- DATABASE CONNECTION -------------------------------------------------*/
 		// Database Driver
 		Class.forName(property.getProperty("database_driver"));
 
@@ -26,13 +29,18 @@ public class DataUtil {
 		try {
 			// creating database connection
 			connection = DriverManager.getConnection(property.getProperty("database_connection"));
+			/*
+			 * get ECXCLUSIVE LOCK, so that only one transaction reads and
+			 * writes at one time
+			 */
+			boolean get_lock = connection.createStatement().execute("PRAGMA locking_mode = EXCLUSIVE");
+			/* wait till lock is acquired */
+			while (!get_lock) {
+			}
+
 			Statement statement = connection.createStatement();
-
-			// Fetching data from database
-			ResultSet result_set = statement.executeQuery("SELECT * FROM emailqueue "); // lock, read and write as processed.
-			//WHERE is_processed = 0 LIMIT 10000
-
-			// Iterating data read from database
+			ResultSet result_set = statement.executeQuery("SELECT * FROM emailqueue WHERE processed = 0"); 
+			
 			while (result_set.next()) {
 				EmailStructure emailStructure = new EmailStructure();
 				emailStructure.setFrom_email(result_set.getString("from_email_address"));
@@ -41,15 +49,18 @@ public class DataUtil {
 				emailStructure.setBody(result_set.getString("body"));
 				mails_to_send.put(result_set.getInt("id"), emailStructure);
 			}
-		} catch (
-
-		SQLException e)
-
-		{
+		
+		/* Update 'processed' status of read(above) records to 1 */ 
+		PreparedStatement preparedStatement = connection.prepareStatement("UPDATE emailqueue SET processed = 1 WHERE id = ?");
+		
+		for(Integer id : mails_to_send.keySet()) {
+			preparedStatement.setInt(1, id);
+			preparedStatement.executeUpdate();
+		}
+		
+		} catch (SQLException e) {
 			System.err.println(e.getMessage());
-		} finally
-
-		{
+		} finally {
 			try {
 				if (connection != null)
 					connection.close();

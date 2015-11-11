@@ -1,5 +1,6 @@
 package com.cd.asgn.mailer;
 
+/* Class to hold email details */
 public class EmailStructure {
 	String to_email;
 	String from_email;

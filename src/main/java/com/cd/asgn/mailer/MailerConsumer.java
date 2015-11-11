@@ -16,7 +16,9 @@ public class MailerConsumer implements Callable<Integer>, Runnable {
 	private Session session;
 	private Properties property;
 	private MimeMessage mimeMessage;
+	/* to check if mail sending failed or not */
 	private Integer flag = -1;
+	
 	public MailerConsumer(MimeMessage mimeMessage, Integer id, Properties property, Session session) {
 		this.mail_id = id;
 		this.property = property;
@@ -27,6 +29,7 @@ public class MailerConsumer implements Callable<Integer>, Runnable {
 	public void run() {
 		Transport transport = null;
 		try {
+			/* initialize transport and authenticate */
 			transport = session.getTransport(property.getProperty("protocol"));
 			transport.connect(property.getProperty("mail.smtp.host"),
 			Integer.parseInt(property.getProperty("mail.smtp.port")), property.getProperty("user"),	property.getProperty("password"));
