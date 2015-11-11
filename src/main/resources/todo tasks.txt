@@ -1,5 +1,0 @@
-implement multiple instance concept ... read from database with locks
-in single instance impl ... change 'processed' status after reading..
-use future callbacks
-exceptions don't halt programs.
-
