@@ -46,7 +46,7 @@ public class MailerConsumer implements Callable<Integer>, Runnable {
 		} catch (MessagingException e) {
 			flag = 0; 
 			System.out.println("Messaging Failed");
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch (InterruptedException e) {
 			flag = 0;
 			System.out.println("Interrupted");
