@@ -10,4 +10,5 @@ Software Required:
 CDMailer is a Maven project, import the project into your eclipse work-space, build and execute.
 
 Database Used        : SQLite
+
 Third Party API Used : JavaMail, Log4j
