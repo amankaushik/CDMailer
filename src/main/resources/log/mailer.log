@@ -1,0 +1,26 @@
+2015-11-11 18:44:14 INFO  MailSender:69 - Starting mail sending process ..
+2015-11-11 18:55:22 INFO  MailSender:69 - Starting mail sending process ..
+2015-11-11 18:55:22 INFO  MailSender:33 - Establishing Database Connection ..
+2015-11-11 18:55:22 INFO  MailSender:39 - Getting EXCLUSIVE lock ..
+2015-11-11 18:55:22 INFO  MailSender:44 - Lock acquired ..
+2015-11-11 18:55:22 INFO  MailSender:56 - Results fetched, updating status ..
+2015-11-11 18:55:22 INFO  MailSender:71 - Closing Database Connection ..
+2015-11-11 18:55:22 INFO  MailSender:76 - Sending mail ..
+2015-11-11 18:55:22 INFO  MailSender:115 - Changging processed status of messages not sent
+2015-11-11 18:55:22 INFO  MailSender:33 - Establishing Database Connection ..
+2015-11-11 18:55:22 INFO  MailSender:39 - Getting EXCLUSIVE lock ..
+2015-11-11 18:55:22 INFO  MailSender:44 - Lock acquired ..
+2015-11-11 18:55:22 INFO  MailSender:56 - Results fetched, updating status ..
+2015-11-11 18:55:22 INFO  MailSender:71 - Closing Database Connection ..
+2015-11-11 18:59:00 INFO  MailSender:69 - Starting mail sending process ..
+2015-11-11 18:59:00 INFO  MailSender:33 - Establishing Database Connection ..
+2015-11-11 18:59:01 INFO  MailSender:39 - Getting EXCLUSIVE lock ..
+2015-11-11 18:59:01 INFO  MailSender:44 - Lock acquired ..
+2015-11-11 18:59:01 INFO  MailSender:56 - Results fetched, updating status ..
+2015-11-11 18:59:01 INFO  MailSender:71 - Closing Database Connection ..
+2015-11-11 18:59:01 INFO  MailSender:76 - Sending mail ..
+2015-11-11 18:59:01 INFO  MailSender:33 - Establishing Database Connection ..
+2015-11-11 18:59:01 INFO  MailSender:39 - Getting EXCLUSIVE lock ..
+2015-11-11 18:59:01 INFO  MailSender:44 - Lock acquired ..
+2015-11-11 18:59:01 INFO  MailSender:56 - Results fetched, updating status ..
+2015-11-11 18:59:01 INFO  MailSender:71 - Closing Database Connection ..

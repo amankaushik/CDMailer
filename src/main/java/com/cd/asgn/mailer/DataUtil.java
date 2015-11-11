@@ -11,10 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 public class DataUtil {
 	
 	/* Get mail details from database */
-	Map<Integer, EmailStructure> get_email_data(Properties property, InputStream input)
+	Map<Integer, EmailStructure> get_email_data(Properties property, InputStream input, Logger logger)
 			throws ClassNotFoundException {
 		/*
 		 * EmailStructure : Class to hold email information from the database ID
@@ -28,16 +30,18 @@ public class DataUtil {
 		Connection connection = null;
 		try {
 			// creating database connection
+			logger.info("Establishing Database Connection ..");
 			connection = DriverManager.getConnection(property.getProperty("database_connection"));
 			/*
 			 * get ECXCLUSIVE LOCK, so that only one transaction reads and
 			 * writes at one time
 			 */
+			logger.info("Getting EXCLUSIVE lock ..");
 			boolean get_lock = connection.createStatement().execute("PRAGMA locking_mode = EXCLUSIVE");
 			/* wait till lock is acquired */
 			while (!get_lock) {
 			}
-
+			logger.info("Lock acquired ..");
 			Statement statement = connection.createStatement();
 			ResultSet result_set = statement.executeQuery("SELECT * FROM emailqueue WHERE processed = 0"); 
 			
@@ -49,7 +53,7 @@ public class DataUtil {
 				emailStructure.setBody(result_set.getString("body"));
 				mails_to_send.put(result_set.getInt("id"), emailStructure);
 			}
-		
+			logger.info("Results fetched, updating status ..");
 		/* Update 'processed' status of read(above) records to 1 */ 
 		PreparedStatement preparedStatement = connection.prepareStatement("UPDATE emailqueue SET processed = 1 WHERE id = ?");
 		
@@ -59,12 +63,15 @@ public class DataUtil {
 		}
 		
 		} catch (SQLException e) {
+			logger.error(e.getMessage());
 			System.err.println(e.getMessage());
 		} finally {
 			try {
 				if (connection != null)
+					logger.info("Closing Database Connection ..");
 					connection.close();
 			} catch (SQLException e) {
+				logger.error(e.getMessage());
 				System.err.println(e);
 			}
 		}

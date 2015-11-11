@@ -36,6 +36,7 @@ public class MailSender {
 	public static final int THREAD_POOL_SIZE = 5;
 	final static ExecutorService mailConsumers = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 	final static Logger logger = Logger.getLogger(MailSender.class);
+
 	/* Convert mail data to MimeMessage objects */
 	public static Map<Integer, MimeMessage> get_all_messages(Map<Integer, EmailStructure> mails_to_send,
 			Session session) {
@@ -65,15 +66,14 @@ public class MailSender {
 	/* Gets mails data, starts threads and send mails */
 
 	public void startSending() throws ClassNotFoundException, MessagingException {
-		System.out.println("Starting mail sending process ..");
 		logger.info("Starting mail sending process ..");
 		/* Details of mails to send from the database */
 		Map<Integer, EmailStructure> mailsToSend = new HashMap<Integer, EmailStructure>();
 		DataUtil dataUtil = new DataUtil();
-		mailsToSend = dataUtil.get_email_data(property, input);
+		mailsToSend = dataUtil.get_email_data(property, input, logger);
 
 		while (!mailsToSend.isEmpty()) {
-			System.out.println("Sending Mail");
+			logger.info("Sending mail ..");
 
 			/* IDs of mails that failed during sending */
 			ArrayList<FutureTask<Integer>> mailsNotSent = new ArrayList<FutureTask<Integer>>();
@@ -104,42 +104,46 @@ public class MailSender {
 			 */
 			for (FutureTask<Integer> mail : mailsNotSent) {
 				try {
-					badID.add(mail.get());
+					if(mail.get() != -1)
+						badID.add(mail.get());
 				} catch (InterruptedException | ExecutionException e) {
 					e.printStackTrace();
 				}
 			}
 
 			/* Change 'processed' status of failed mails back to 0 */
-			Class.forName(property.getProperty("database_driver"));
-			Connection connection = null;
-			try {
-				connection = DriverManager.getConnection(property.getProperty("database_connection"));
-				/*
-				 * get ECXCLUSIVE LOCK, so that only one transaction reads and
-				 * writes at one time
-				 */
-				boolean get_lock = connection.createStatement().execute("PRAGMA locking_mode = EXCLUSIVE");
-				/* wait till lock is acquired */
-				while (!get_lock) {
-				}
-				PreparedStatement preparedStatement = connection
-						.prepareStatement("UPDATE emailqueue SET processed = 0 WHERE id = ?");
-				for (Integer id : badID) {
-					preparedStatement.setInt(1, id);
-					preparedStatement.executeUpdate();
-				}
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-			} finally {
+			if (!badID.isEmpty()) {
+				logger.info("Changing processed status of messages not sent");
+				Class.forName(property.getProperty("database_driver"));
+				Connection connection = null;
 				try {
-					if (connection != null)
-						connection.close();
+					connection = DriverManager.getConnection(property.getProperty("database_connection"));
+					/*
+					 * get ECXCLUSIVE LOCK, so that only one transaction reads
+					 * and writes at one time
+					 */
+					boolean get_lock = connection.createStatement().execute("PRAGMA locking_mode = EXCLUSIVE");
+					/* wait till lock is acquired */
+					while (!get_lock) {
+					}
+					PreparedStatement preparedStatement = connection
+							.prepareStatement("UPDATE emailqueue SET processed = 0 WHERE id = ?");
+					for (Integer id : badID) {
+						preparedStatement.setInt(1, id);
+						preparedStatement.executeUpdate();
+					}
 				} catch (SQLException e) {
-					System.err.println(e);
+					System.err.println(e.getMessage());
+				} finally {
+					try {
+						if (connection != null)
+							connection.close();
+					} catch (SQLException e) {
+						System.err.println(e);
+					}
 				}
 			}
-			mailsToSend = dataUtil.get_email_data(property, input);
+			mailsToSend = dataUtil.get_email_data(property, input, logger);
 		}
 		/* Shutdown the threadpool */
 		mailConsumers.shutdown();
