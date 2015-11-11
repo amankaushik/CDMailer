@@ -238,3 +238,27 @@
 2015-11-11 21:32:47 INFO  MailSender:44 - Lock acquired ..
 2015-11-11 21:32:47 INFO  MailSender:57 - Results fetched, updating status ..
 2015-11-11 21:32:47 INFO  MailSender:72 - Closing Database Connection ..
+2015-11-11 22:23:55 INFO  MailSender:69 - Starting mail sending process ..
+2015-11-11 22:23:55 INFO  MailSender:33 - Establishing Database Connection ..
+2015-11-11 22:23:55 INFO  MailSender:39 - Getting EXCLUSIVE lock ..
+2015-11-11 22:23:55 INFO  MailSender:44 - Lock acquired ..
+2015-11-11 22:23:55 INFO  MailSender:57 - Results fetched, updating status ..
+2015-11-11 22:23:55 INFO  MailSender:72 - Closing Database Connection ..
+2015-11-11 22:23:55 INFO  MailSender:76 - Sending mail ..
+2015-11-11 22:23:55 INFO  MailSender:33 - Establishing Database Connection ..
+2015-11-11 22:23:55 INFO  MailSender:39 - Getting EXCLUSIVE lock ..
+2015-11-11 22:23:55 INFO  MailSender:44 - Lock acquired ..
+2015-11-11 22:23:55 INFO  MailSender:57 - Results fetched, updating status ..
+2015-11-11 22:23:55 INFO  MailSender:72 - Closing Database Connection ..
+2015-11-11 22:25:22 INFO  MailSender:69 - Starting mail sending process ..
+2015-11-11 22:25:22 INFO  MailSender:33 - Establishing Database Connection ..
+2015-11-11 22:25:22 INFO  MailSender:39 - Getting EXCLUSIVE lock ..
+2015-11-11 22:25:22 INFO  MailSender:44 - Lock acquired ..
+2015-11-11 22:25:22 INFO  MailSender:57 - Results fetched, updating status ..
+2015-11-11 22:25:22 INFO  MailSender:72 - Closing Database Connection ..
+2015-11-11 22:25:22 INFO  MailSender:76 - Sending mail ..
+2015-11-11 22:25:22 INFO  MailSender:33 - Establishing Database Connection ..
+2015-11-11 22:25:22 INFO  MailSender:39 - Getting EXCLUSIVE lock ..
+2015-11-11 22:25:22 INFO  MailSender:44 - Lock acquired ..
+2015-11-11 22:25:22 INFO  MailSender:57 - Results fetched, updating status ..
+2015-11-11 22:25:22 INFO  MailSender:72 - Closing Database Connection ..
